@@ -29,7 +29,7 @@ enum class OpCode(val binCode: Int) {
     }
 }
 
-class TD4(binPath: String) {
+class TD4(binPath: String, input: Int = 0b0000) {
 
     private class Memory(path: String) {
 
@@ -55,14 +55,13 @@ class TD4(binPath: String) {
         var pc = 0
     }
 
-    class Port {
-        var input = 0
+    class Port(val input: Int = 0b0000) {
         var output = 0
     }
 
     private val memory = Memory(binPath)
     private val register = Register()
-    val port = Port()
+    val port = Port(input and 0b1111)
 
     fun fetch(): Pair<OpCode, Int>{
         val pc = register.pc
