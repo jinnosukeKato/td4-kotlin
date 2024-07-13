@@ -106,7 +106,7 @@ class TD4(binPath: String, input: Int = 0b0000) {
                 return
             }
             Jnc -> {
-                if (register.carry) {
+                if (!register.carry) {
                     register.pc = operand
                     register.carry = false
                     return
