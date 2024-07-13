@@ -22,7 +22,9 @@ enum class OpCode(val binCode: Int) {
 
     companion object {
         fun fromBinCode(code: Int): OpCode {
-            return entries.firstOrNull { it.binCode == code} ?: throw RuntimeException("Illegal Opcode ${code.toString(2)}")
+            return entries
+                .firstOrNull { it.binCode == code }
+                ?: throw RuntimeException("Illegal Opcode ${code.toString(2)}")
         }
     }
 }
