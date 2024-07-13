@@ -11,7 +11,7 @@ enum class OpCode(val binCode: Int) {
     MovAB(0b0001),
     MovBA(0b0100),
     AddA(0b0000),
-    AddBIm(0b0101),
+    AddB(0b0101),
     InA(0b0010),
     InB(0b0110),
     OutIm(0b1011),
@@ -80,7 +80,7 @@ class TD4(binPath: String) {
                 register.carry = (0b1_0000 and result) != 0
                 register.registerA = 0b1111 and result
             }
-            AddBIm -> {
+            AddB -> {
                 val result = register.registerB + operand
                 register.carry = (0b1_0000 and result) != 0
                 register.registerB = 0b1111 and result
