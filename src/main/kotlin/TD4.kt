@@ -18,19 +18,18 @@ enum class OpCode(val binCode: Int) {
     OutB(0b1001),
     Jmp(0b1111),
     Jnc(0b1110),
-    Kill(0b1101); // 本来存在しない．エミュレータ終了用．
+    Kill(0b1101), // 本来存在しない．エミュレータ終了用．
 }
 
 class TD4(binPath: String, input: Int = 0b0000) {
-
     private class Memory(path: String) {
-
         var memory = mutableListOf<Int>()
 
         init {
             val binFile = File(path)
-            if (!binFile.isFile)
+            if (!binFile.isFile) {
                 throw RuntimeException("${Path(path).toAbsolutePath()} is not a file")
+            }
 
             File(path)
                 .bufferedReader()
@@ -55,21 +54,25 @@ class TD4(binPath: String, input: Int = 0b0000) {
     private val register = Register()
     val port = Port(input and 0b1111)
 
-    fun fetch(): Int{
+    fun fetch(): Int {
         val pc = register.pc
         return memory.memory[pc]
     }
 
     fun decode(data: Int): Pair<OpCode, Int> {
-        val opcode = OpCode.entries
-            .firstOrNull { it.binCode == (data shr 4) } // 8bit中の上位4bit
-            ?: throw RuntimeException("Illegal Opcode ${(data shr 4).toString(2)}")
+        val opcode =
+            OpCode.entries
+                .firstOrNull { it.binCode == (data shr 4) } // 8bit中の上位4bit
+                ?: throw RuntimeException("Illegal Opcode ${(data shr 4).toString(2)}")
 
         val operand = data and 0b1111 // 8bit中の下位4bit
         return Pair(opcode, operand)
     }
 
-    fun execute(opcode: OpCode, operand: Int) {
+    fun execute(
+        opcode: OpCode,
+        operand: Int,
+    ) {
         when (opcode) {
             AddA -> {
                 val result = register.a + operand

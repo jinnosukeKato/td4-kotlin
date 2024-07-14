@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.9.23"
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
 }
 
 group = "io.github.jinnosukeKato"
@@ -16,6 +17,7 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
 kotlin {
     jvmToolchain(20)
 }
