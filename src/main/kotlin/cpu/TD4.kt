@@ -1,6 +1,6 @@
-package io.github.jinnosukeKato
+package io.github.jinnosukeKato.cpu
 
-import io.github.jinnosukeKato.OpCode.*
+import io.github.jinnosukeKato.cpu.OpCode.*
 import java.io.File
 import kotlin.io.path.Path
 import kotlin.system.exitProcess
