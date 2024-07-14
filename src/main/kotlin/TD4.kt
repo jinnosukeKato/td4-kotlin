@@ -19,14 +19,6 @@ enum class OpCode(val binCode: Int) {
     Jmp(0b1111),
     Jnc(0b1110),
     Kill(0b1101); // 本来存在しない．エミュレータ終了用．
-
-    companion object {
-        fun fromBinCode(code: Int): OpCode {
-            return entries
-                .firstOrNull { it.binCode == code }
-                ?: throw RuntimeException("Illegal Opcode ${code.toString(2)}")
-        }
-    }
 }
 
 class TD4(binPath: String, input: Int = 0b0000) {
@@ -63,12 +55,17 @@ class TD4(binPath: String, input: Int = 0b0000) {
     private val register = Register()
     val port = Port(input and 0b1111)
 
-    fun fetch(): Pair<OpCode, Int>{
+    fun fetch(): Int{
         val pc = register.pc
-        val operation = memory.memory[pc]
+        return memory.memory[pc]
+    }
 
-        val opcode = OpCode.fromBinCode(operation shr 4) // 8bit中の上位4bit
-        val operand = operation and 0b1111 // 8bit中の下位4bit
+    fun decode(data: Int): Pair<OpCode, Int> {
+        val opcode = OpCode.entries
+            .firstOrNull { it.binCode == (data shr 4) } // 8bit中の上位4bit
+            ?: throw RuntimeException("Illegal Opcode ${(data shr 4).toString(2)}")
+
+        val operand = data and 0b1111 // 8bit中の下位4bit
         return Pair(opcode, operand)
     }
 
