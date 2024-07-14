@@ -3,7 +3,6 @@ package io.github.jinnosukeKato.cpu
 import io.github.jinnosukeKato.cpu.OpCode.*
 import java.io.File
 import kotlin.io.path.Path
-import kotlin.system.exitProcess
 
 enum class OpCode(val binCode: Int) {
     MovA(0b0011),
@@ -18,7 +17,6 @@ enum class OpCode(val binCode: Int) {
     OutB(0b1001),
     Jmp(0b1111),
     Jnc(0b1110),
-    Kill(0b1101), // 本来存在しない．エミュレータ終了用．
 }
 
 class TD4(binPath: String, input: Int = 0b0000) {
@@ -127,10 +125,6 @@ class TD4(binPath: String, input: Int = 0b0000) {
             OutIm -> {
                 port.output = operand
                 register.carry = false
-            }
-            Kill -> {
-                println("exit TD4 emulator")
-                exitProcess(0)
             }
         }
 
