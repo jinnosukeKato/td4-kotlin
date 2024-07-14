@@ -9,7 +9,7 @@ fun main() {
     val tokenList = parser.parse()
     val compiler = Compiler(tokenList)
     val bin = compiler.compile()
-    bin.forEach{
+    bin.forEach {
         println(it.toString(2).padStart(8, '0'))
     }
 

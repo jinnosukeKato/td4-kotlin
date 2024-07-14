@@ -3,18 +3,18 @@ package io.github.jinnosukeKato.assembler
 import java.io.File
 
 class Parser(sourcePath: String) {
-
-    private val source: List<String> = buildList {
-        File(sourcePath)
-            .bufferedReader()
-            .readLines()
-            .forEach { line ->
-                line.split(' ')
-                    .forEach {
-                        add(it)
-                    }
+    private val source: List<String> =
+        buildList {
+            File(sourcePath)
+                .bufferedReader()
+                .readLines()
+                .forEach { line ->
+                    line.split(' ')
+                        .forEach {
+                            add(it)
+                        }
+                }
         }
-    }
 
     fun parse(): List<Token> {
         var pos = 0
@@ -30,12 +30,13 @@ class Parser(sourcePath: String) {
                         pos += 1
                         val right = source[pos]
 
-                        if (left == "A" && right == "B")
+                        if (left == "A" && right == "B") {
                             add(Token.MovAB)
-                        else if(left == "B" && right == "A")
+                        } else if (left == "B" && right == "A") {
                             add(Token.MovBA)
-                        else
+                        } else {
                             add(Token.Mov(Register.getByString(left), right.toInt(2)))
+                        }
                     }
                     op == "ADD" -> {
                         pos += 1
@@ -60,10 +61,11 @@ class Parser(sourcePath: String) {
                     }
                     op == "OUT" -> {
                         pos += 1
-                        if (source[pos] == "B")
+                        if (source[pos] == "B") {
                             add(Token.OutB)
-                        else
+                        } else {
                             add(Token.OutIm(source[pos].toInt(2)))
+                        }
                     }
                     op.isBlank() -> break
                     else -> throw RuntimeException("Illegal Opcode $op")
