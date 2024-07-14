@@ -49,8 +49,8 @@ class TD4(binPath: String, input: Int = 0b0000) {
     }
 
     private class Register {
-        var registerA = 0
-        var registerB = 0
+        var a = 0
+        var b = 0
         var carry = false
         var pc = 0
     }
@@ -75,29 +75,29 @@ class TD4(binPath: String, input: Int = 0b0000) {
     fun execute(opcode: OpCode, operand: Int) {
         when (opcode) {
             AddA -> {
-                val result = register.registerA + operand
+                val result = register.a + operand
                 register.carry = (0b1_0000 and result) != 0
-                register.registerA = 0b1111 and result
+                register.a = 0b1111 and result
             }
             AddB -> {
-                val result = register.registerB + operand
+                val result = register.b + operand
                 register.carry = (0b1_0000 and result) != 0
-                register.registerB = 0b1111 and result
+                register.b = 0b1111 and result
             }
             MovAIm -> {
-                register.registerA = operand
+                register.a = operand
                 register.carry = false
             }
             MovBIm -> {
-                register.registerB = operand
+                register.b = operand
                 register.carry = false
             }
             MovAB -> {
-                register.registerA = register.registerB
+                register.a = register.b
                 register.carry = false
             }
             MovBA -> {
-                register.registerB = register.registerA
+                register.b = register.a
                 register.carry = false
             }
             Jmp -> {
@@ -113,15 +113,15 @@ class TD4(binPath: String, input: Int = 0b0000) {
                 }
             }
             InA -> {
-                register.registerA = port.input
+                register.a = port.input
                 register.carry = false
             }
             InB -> {
-                register.registerB = port.input
+                register.b = port.input
                 register.carry = false
             }
             OutB -> {
-                port.output = register.registerB
+                port.output = register.b
                 register.carry = false
             }
             OutIm -> {
