@@ -6,8 +6,8 @@ import kotlin.io.path.Path
 import kotlin.system.exitProcess
 
 enum class OpCode(val binCode: Int) {
-    MovAIm(0b0011),
-    MovBIm(0b0111),
+    MovA(0b0011),
+    MovB(0b0111),
     MovAB(0b0001),
     MovBA(0b0100),
     AddA(0b0000),
@@ -84,11 +84,11 @@ class TD4(binPath: String, input: Int = 0b0000) {
                 register.carry = (0b1_0000 and result) != 0
                 register.b = 0b1111 and result
             }
-            MovAIm -> {
+            MovA -> {
                 register.a = operand
                 register.carry = false
             }
-            MovBIm -> {
+            MovB -> {
                 register.b = operand
                 register.carry = false
             }
