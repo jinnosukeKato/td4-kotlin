@@ -1,53 +1,8 @@
 package io.github.jinnosukeKato.cpu
 
 import io.github.jinnosukeKato.cpu.OpCode.*
-import java.io.File
-import kotlin.io.path.Path
-
-enum class OpCode(val binCode: Int) {
-    MovA(0b0011),
-    MovB(0b0111),
-    MovAB(0b0001),
-    MovBA(0b0100),
-    AddA(0b0000),
-    AddB(0b0101),
-    InA(0b0010),
-    InB(0b0110),
-    OutIm(0b1011),
-    OutB(0b1001),
-    Jmp(0b1111),
-    Jnc(0b1110),
-}
 
 class TD4(binPath: String, input: Int = 0b0000) {
-    private class Memory(path: String) {
-        var memory = mutableListOf<Int>()
-
-        init {
-            val binFile = File(path)
-            if (!binFile.isFile) {
-                throw RuntimeException("${Path(path).toAbsolutePath()} is not a file")
-            }
-
-            File(path)
-                .bufferedReader()
-                .use { it.readLines() }
-                .map { it.toInt(2) } // radix = 2で2進数で解釈する
-                .forEach { memory.add(it) }
-        }
-    }
-
-    private class Register {
-        var a = 0
-        var b = 0
-        var carry = false
-        var pc = 0
-    }
-
-    class Port(val input: Int = 0b0000) {
-        var output = 0
-    }
-
     private val memory = Memory(binPath)
     private val register = Register()
     val port = Port(input and 0b1111)
