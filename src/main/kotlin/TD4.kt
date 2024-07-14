@@ -21,19 +21,19 @@ enum class OpCode(val binCode: Int) {
     Kill(0b1101); // 本来存在しない．エミュレータ終了用．
 
     companion object {
-        fun fromBinCode(code: Int): OpCode {
+        fun fromBinCode(code: UByte): OpCode {
             return entries
-                .firstOrNull { it.binCode == code }
+                .firstOrNull { it.binCode == code.toInt() }
                 ?: throw RuntimeException("Illegal Opcode ${code.toString(2)}")
         }
     }
 }
 
-class TD4(binPath: String, input: Int = 0b0000) {
+class TD4(binPath: String, input: UByte = 0u) {
 
     private class Memory(path: String) {
 
-        var memory = mutableListOf<Int>()
+        var memory = mutableListOf<UByte>()
 
         init {
             val binFile = File(path)
@@ -43,46 +43,46 @@ class TD4(binPath: String, input: Int = 0b0000) {
             File(path)
                 .bufferedReader()
                 .use { it.readLines() }
-                .map { it.toInt(2) } // radix = 2で2進数で解釈する
+                .map { it.toUByte(2) } // radix = 2で2進数で解釈する
                 .forEach { memory.add(it) }
         }
     }
 
     private class Register {
-        var a = 0
-        var b = 0
+        var a: UByte = 0u
+        var b: UByte = 0u
         var carry = false
-        var pc = 0
+        var pc: UByte = 0u
     }
 
-    class Port(val input: Int = 0b0000) {
-        var output = 0
+    class Port(val input: UByte = 0u) {
+        var output: UByte = 0u
     }
 
     private val memory = Memory(binPath)
     private val register = Register()
-    val port = Port(input and 0b1111)
+    val port = Port(input and (0b1111).toUByte())
 
-    fun fetch(): Pair<OpCode, Int>{
+    fun fetch(): Pair<OpCode, UByte>{
         val pc = register.pc
-        val operation = memory.memory[pc]
+        val operation = memory.memory[pc.toInt()]
 
-        val opcode = OpCode.fromBinCode(operation shr 4) // 8bit中の上位4bit
-        val operand = operation and 0b1111 // 8bit中の下位4bit
+        val opcode = OpCode.fromBinCode((operation.toInt() shr 4).toUByte()) // 8bit中の上位4bit
+        val operand = operation and (0b1111).toUByte() // 8bit中の下位4bit
         return Pair(opcode, operand)
     }
 
-    fun execute(opcode: OpCode, operand: Int) {
+    fun execute(opcode: OpCode, operand: UByte) {
         when (opcode) {
             AddA -> {
-                val result = register.a + operand
-                register.carry = (0b1_0000 and result) != 0
-                register.a = 0b1111 and result
+                val result: UByte = (register.a + operand).toUByte()
+                register.carry = ((0b1_0000).toUByte() and result) != 0.toUByte()
+                register.a = (0b1111).toUByte() and result
             }
             AddB -> {
-                val result = register.b + operand
-                register.carry = (0b1_0000 and result) != 0
-                register.b = 0b1111 and result
+                val result = (register.b + operand).toUByte()
+                register.carry = ((0b1_0000).toUByte() and result) != 0.toUByte()
+                register.b = (0b1111).toUByte() and result
             }
             MovA -> {
                 register.a = operand
@@ -134,6 +134,6 @@ class TD4(binPath: String, input: Int = 0b0000) {
             }
         }
 
-        register.pc = (register.pc + 1) and 0b1111
+        register.pc = (register.pc + 1u).toUByte() and (0b1111).toUByte()
     }
 }
